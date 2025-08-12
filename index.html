@@ -1,0 +1,1605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Standup Prep</title>
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiRGFpbHkgU3RhbnR1cCBQcmVwIiwic2hvcnRfbmFtZSI6IlN0YW5kdXAgUHJlcCIsInN0YXJ0X3VybCI6Ii8iLCJkaXNwbGF5Ijoic3RhbmRhbG9uZSIsImJhY2tncm91bmRfY29sb3IiOiIjZmZmZmZmIiwidGhlbWVfY29sb3IiOiIjNjM2NmYxIiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDtiYXNlNjQsUEhOMlp5QjNhV1IwYUQwaU1qUXdJaUJvWldsbmFIUTlJakkwTUNJZ2RtbGxkMEp2ZUQwaU1DQXdJakkwTUNBeU5EQWlJR1pwYkd3OUlpTTJNelkyWmpFaVBnbzhjbVZqZENCM2FXUjBhRDBpTWpBd0lpQm9aV2xuYUhROUlUSXdNQ0lnY0hnOUlqSXdJaUI1UFNJeU1DSWdablZzYkQwaVkyeDFjbkpsYm5SRGIyeHZjaUlnY25nOUlqRXdJaTgrUEM5emRtYytJZz09IiwidHlwZSI6ImltYWdlL3N2Zyt4bWwiLCJzaXplcyI6IjI0MHgyNDAifV19">
+    <meta name="theme-color" content="#6366f1">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #5856eb;
+            --secondary: #f3f4f6;
+            --text: #374151;
+            --text-light: #6b7280;
+            --border: #e5e7eb;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --bg: #ffffff;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Loading Spinner */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            flex-direction: column;
+            color: white;
+            gap: 20px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Auth Page */
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .auth-card {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .auth-card h1 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .auth-card p {
+            color: var(--text-light);
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            justify-content: center;
+            min-height: 48px;
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: var(--text);
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        .btn-google {
+            background: white;
+            color: var(--text);
+            border: 1px solid var(--border);
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .btn-google:hover {
+            background: var(--secondary);
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-radius: 16px;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .header-left h1 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .header-left .date {
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 16px;
+            background: var(--secondary);
+            border-radius: 8px;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .date-nav {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--secondary);
+            border-radius: 8px;
+            padding: 8px;
+        }
+
+        .date-nav button {
+            background: none;
+            border: none;
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            color: var(--text);
+            transition: background 0.2s ease;
+        }
+
+        .date-nav button:hover {
+            background: white;
+        }
+
+        .date-nav input[type="date"] {
+            border: none;
+            background: none;
+            font-size: 14px;
+            color: var(--text);
+            cursor: pointer;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .section {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            min-height: 400px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--secondary);
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .yesterday .section-icon { color: var(--success); }
+        .today .section-icon { color: var(--primary); }
+        .blockers .section-icon { color: var(--warning); }
+
+        .add-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.2s ease;
+        }
+
+        .add-btn:hover {
+            background: var(--primary-hover);
+            transform: scale(1.1);
+        }
+
+        .items-list {
+            list-style: none;
+        }
+
+        .item {
+            background: var(--secondary);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .item:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+
+        .yesterday .item {
+            border-left-color: var(--success);
+        }
+
+        .today .item {
+            border-left-color: var(--primary);
+        }
+
+        .blockers .item {
+            border-left-color: var(--warning);
+        }
+
+        .blockers .item.high {
+            border-left-color: var(--error);
+        }
+
+        .item-content {
+            flex: 1;
+            min-height: 20px;
+            word-wrap: break-word;
+        }
+
+        .item-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 5px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .item:hover .item-actions {
+            opacity: 1;
+        }
+
+        .item-action {
+            background: white;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: var(--text-light);
+            transition: all 0.2s ease;
+        }
+
+        .item-action:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .item-action.delete:hover {
+            background: var(--error);
+        }
+
+        .priority-badge {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .priority-high {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+        }
+
+        .priority-medium {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .priority-low {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .resolved {
+            opacity: 0.6;
+            text-decoration: line-through;
+        }
+
+        /* Input Forms */
+        .item-input {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            width: 100%;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 60px;
+            transition: border-color 0.2s ease;
+        }
+
+        .item-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .input-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .priority-select {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: white;
+            color: var(--text);
+            font-size: 14px;
+        }
+
+        .quick-add {
+            display: none;
+            margin-bottom: 15px;
+        }
+
+        .quick-add.active {
+            display: block;
+        }
+
+        /* Bottom Actions */
+        .bottom-actions {
+            background: white;
+            border-radius: 16px;
+            padding: 20px 30px;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .action-group {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .save-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .save-status.saved {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .save-status.saving {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .save-status.error {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+        }
+
+        /* History Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-header h2 {
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-light);
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+
+        .close-btn:hover {
+            background: var(--secondary);
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        .history-entry {
+            background: var(--secondary);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .history-date {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .history-section {
+            margin-bottom: 15px;
+        }
+
+        .history-section h4 {
+            color: var(--text);
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .history-items {
+            list-style: none;
+        }
+
+        .history-items li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .history-items li:last-child {
+            border-bottom: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .header {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+
+            .header-right {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .bottom-actions {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .action-group {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .section {
+                padding: 20px;
+                min-height: 300px;
+            }
+
+            .modal-content {
+                margin: 10px;
+                max-height: 90vh;
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-light);
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.3;
+        }
+
+        .suggestions {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            z-index: 10;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .suggestions.active {
+            display: block;
+        }
+
+        .suggestion-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.2s ease;
+        }
+
+        .suggestion-item:hover {
+            background: var(--secondary);
+        }
+
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+
+        .input-container {
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading">
+        <div class="spinner"></div>
+        <p>Loading Daily Standup Prep...</p>
+    </div>
+
+    <!-- Auth Screen -->
+    <div id="authScreen" class="auth-container" style="display: none;">
+        <div class="auth-card">
+            <h1>📊 Daily Standup Prep</h1>
+            <p>Organize your daily updates and never forget important blockers again.</p>
+            <button id="googleSignInBtn" class="btn btn-google">
+                <svg width="20" height="20" viewBox="0 0 24 24">
+                    <path fill="#4285f4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34a853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#fbbc05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                    <path fill="#ea4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                </svg>
+                Continue with Google
+            </button>
+            <div style="margin: 20px 0; position: relative;">
+                <div style="height: 1px; background: var(--border);"></div>
+                <span style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: white; padding: 0 15px; color: var(--text-light); font-size: 14px;">or</span>
+            </div>
+            <div id="emailAuthForm" style="text-align: left;">
+                <input type="email" id="emailInput" placeholder="Enter your email" style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 15px; font-size: 16px;">
+                <input type="password" id="passwordInput" placeholder="Enter your password" style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 15px; font-size: 16px;">
+                <div style="display: flex; gap: 10px;">
+                    <button id="signInBtn" class="btn" style="flex: 1;">Sign In</button>
+                    <button id="signUpBtn" class="btn btn-secondary" style="flex: 1;">Sign Up</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="mainApp" style="display: none;">
+        <div class="container">
+            <!-- Header -->
+            <div class="header">
+                <div class="header-left">
+                    <h1>Daily Standup Prep</h1>
+                    <div class="date" id="currentDate"></div>
+                </div>
+                <div class="header-right">
+                    <div class="date-nav">
+                        <button onclick="navigateDate(-1)">❮</button>
+                        <input type="date" id="datePicker" onchange="navigateToDate(this.value)">
+                        <button onclick="navigateDate(1)">❯</button>
+                    </div>
+                    <div class="user-info">
+                        <div class="user-avatar" id="userAvatar"></div>
+                        <span id="userName"></span>
+                        <button onclick="signOut()" class="btn" style="padding: 6px 12px; font-size: 14px; margin-left: 10px;">Sign Out</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="main-content">
+                <!-- Yesterday Section -->
+                <div class="section yesterday">
+                    <div class="section-header">
+                        <div class="section-title">
+                            <div class="section-icon">✅</div>
+                            What I did yesterday
+                        </div>
+                        <button class="add-btn" onclick="showQuickAdd('yesterday')">+</button>
+                    </div>
+                    <div class="quick-add" id="quickAdd-yesterday">
+                        <div class="input-container">
+                            <textarea class="item-input" id="input-yesterday" placeholder="What did you accomplish yesterday?"></textarea>
+                            <div class="suggestions" id="suggestions-yesterday"></div>
+                        </div>
+                        <div class="input-actions">
+                            <button class="btn" onclick="addItem('yesterday')">Add</button>
+                            <button class="btn btn-secondary" onclick="hideQuickAdd('yesterday')">Cancel</button>
+                        </div>
+                    </div>
+                    <ul class="items-list" id="items-yesterday"></ul>
+                </div>
+
+                <!-- Today Section -->
+                <div class="section today">
+                    <div class="section-header">
+                        <div class="section-title">
+                            <div class="section-icon">🎯</div>
+                            What I'm doing today
+                        </div>
+                        <button class="add-btn" onclick="showQuickAdd('today')">+</button>
+                    </div>
+                    <div class="quick-add" id="quickAdd-today">
+                        <div class="input-container">
+                            <textarea class="item-input" id="input-today" placeholder="What are you planning to work on today?"></textarea>
+                            <div class="suggestions" id="suggestions-today"></div>
+                        </div>
+                        <div class="input-actions">
+                            <button class="btn" onclick="addItem('today')">Add</button>
+                            <button class="btn btn-secondary" onclick="hideQuickAdd('today')">Cancel</button>
+                        </div>
+                    </div>
+                    <ul class="items-list" id="items-today"></ul>
+                </div>
+
+                <!-- Blockers Section -->
+                <div class="section blockers">
+                    <div class="section-header">
+                        <div class="section-title">
+                            <div class="section-icon">🚫</div>
+                            Blockers & Issues
+                        </div>
+                        <button class="add-btn" onclick="showQuickAdd('blockers')">+</button>
+                    </div>
+                    <div class="quick-add" id="quickAdd-blockers">
+                        <div class="input-container">
+                            <textarea class="item-input" id="input-blockers" placeholder="What's blocking you or what help do you need?"></textarea>
+                            <div class="suggestions" id="suggestions-blockers"></div>
+                        </div>
+                        <div class="input-actions">
+                            <select class="priority-select" id="priority-blockers">
+                                <option value="medium">Medium Priority</option>
+                                <option value="low">Low Priority</option>
+                                <option value="high">High Priority</option>
+                            </select>
+                            <button class="btn" onclick="addItem('blockers')">Add</button>
+                            <button class="btn btn-secondary" onclick="hideQuickAdd('blockers')">Cancel</button>
+                        </div>
+                    </div>
+                    <ul class="items-list" id="items-blockers"></ul>
+                </div>
+            </div>
+
+            <!-- Bottom Actions -->
+            <div class="bottom-actions">
+                <div class="action-group">
+                    <button class="btn" onclick="showHistory()">📚 View History</button>
+                    <button class="btn btn-secondary" onclick="exportEntry()">📤 Export</button>
+                </div>
+                <div class="save-status" id="saveStatus">
+                    <span>💾 All changes saved</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- History Modal -->
+    <div id="historyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Entry History</h2>
+                <button class="close-btn" onclick="hideHistory()">&times;</button>
+            </div>
+            <input type="text" class="search-bar" id="historySearch" placeholder="Search your entries..." oninput="filterHistory()">
+            <div id="historyContent"></div>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <script>
+        // Firebase Configuration - Replace with your actual config
+        const firebaseConfig = {
+            apiKey: "your-api-key-here",
+            authDomain: "your-project.firebaseapp.com",
+            projectId: "your-project-id",
+            storageBucket: "your-project.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "your-app-id"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // Global variables
+        let currentUser = null;
+        let currentDate = new Date().toISOString().split('T')[0];
+        let currentEntry = { yesterday: [], today: [], blockers: [] };
+        let allEntries = [];
+        let suggestions = { yesterday: [], today: [], blockers: [] };
+        let saveTimeout = null;
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDatePicker();
+            setupEventListeners();
+            
+            // Auth state listener
+            auth.onAuthStateChanged(user => {
+                if (user) {
+                    currentUser = user;
+                    showMainApp();
+                    loadUserData();
+                } else {
+                    showAuthScreen();
+                }
+                hideLoadingScreen();
+            });
+        });
+
+        function initializeDatePicker() {
+            const datePicker = document.getElementById('datePicker');
+            const currentDateEl = document.getElementById('currentDate');
+            
+            datePicker.value = currentDate;
+            updateDateDisplay();
+        }
+
+        function setupEventListeners() {
+            // Auth buttons
+            document.getElementById('googleSignInBtn').addEventListener('click', signInWithGoogle);
+            document.getElementById('signInBtn').addEventListener('click', signInWithEmail);
+            document.getElementById('signUpBtn').addEventListener('click', signUpWithEmail);
+
+            // Input listeners for auto-save and suggestions
+            ['yesterday', 'today', 'blockers'].forEach(section => {
+                const input = document.getElementById(`input-${section}`);
+                input.addEventListener('input', () => {
+                    showSuggestions(section, input.value);
+                    scheduleAutoSave();
+                });
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        addItem(section);
+                    }
+                });
+            });
+
+            // Click outside to hide suggestions
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.input-container')) {
+                    hideSuggestions();
+                }
+            });
+        }
+
+        // Authentication functions
+        async function signInWithGoogle() {
+            try {
+                const provider = new firebase.auth.GoogleAuthProvider();
+                await auth.signInWithPopup(provider);
+            } catch (error) {
+                alert('Sign in failed: ' + error.message);
+            }
+        }
+
+        async function signInWithEmail() {
+            const email = document.getElementById('emailInput').value;
+            const password = document.getElementById('passwordInput').value;
+            
+            if (!email || !password) {
+                alert('Please enter both email and password');
+                return;
+            }
+
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+            } catch (error) {
+                alert('Sign in failed: ' + error.message);
+            }
+        }
+
+        async function signUpWithEmail() {
+            const email = document.getElementById('emailInput').value;
+            const password = document.getElementById('passwordInput').value;
+            
+            if (!email || !password) {
+                alert('Please enter both email and password');
+                return;
+            }
+
+            if (password.length < 6) {
+                alert('Password should be at least 6 characters');
+                return;
+            }
+
+            try {
+                await auth.createUserWithEmailAndPassword(email, password);
+            } catch (error) {
+                alert('Sign up failed: ' + error.message);
+            }
+        }
+
+        async function signOut() {
+            if (confirm('Are you sure you want to sign out?')) {
+                await auth.signOut();
+            }
+        }
+
+        // UI Display functions
+        function hideLoadingScreen() {
+            document.getElementById('loadingScreen').style.display = 'none';
+        }
+
+        function showAuthScreen() {
+            document.getElementById('authScreen').style.display = 'flex';
+            document.getElementById('mainApp').style.display = 'none';
+        }
+
+        function showMainApp() {
+            document.getElementById('authScreen').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
+            
+            // Update user info
+            const userName = document.getElementById('userName');
+            const userAvatar = document.getElementById('userAvatar');
+            
+            userName.textContent = currentUser.displayName || currentUser.email;
+            userAvatar.textContent = (currentUser.displayName || currentUser.email).charAt(0).toUpperCase();
+        }
+
+        // Data loading and saving functions
+        async function loadUserData() {
+            try {
+                await Promise.all([
+                    loadCurrentEntry(),
+                    loadAllEntries(),
+                    loadSuggestions()
+                ]);
+                renderCurrentEntry();
+            } catch (error) {
+                console.error('Error loading data:', error);
+                showSaveStatus('error', 'Failed to load data');
+            }
+        }
+
+        async function loadCurrentEntry() {
+            const entryRef = db.collection('standupEntries')
+                .where('userId', '==', currentUser.uid)
+                .where('date', '==', currentDate)
+                .limit(1);
+            
+            const snapshot = await entryRef.get();
+            
+            if (!snapshot.empty) {
+                const doc = snapshot.docs[0];
+                const data = doc.data();
+                currentEntry = {
+                    id: doc.id,
+                    yesterday: data.yesterday?.items || [],
+                    today: data.today?.items || [],
+                    blockers: data.blockers?.items || []
+                };
+            } else {
+                currentEntry = { yesterday: [], today: [], blockers: [] };
+                // Auto-suggest yesterday's "today" items
+                await suggestYesterdayItems();
+            }
+        }
+
+        async function suggestYesterdayItems() {
+            const yesterday = new Date(currentDate);
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yesterdayStr = yesterday.toISOString().split('T')[0];
+            
+            const entryRef = db.collection('standupEntries')
+                .where('userId', '==', currentUser.uid)
+                .where('date', '==', yesterdayStr)
+                .limit(1);
+            
+            const snapshot = await entryRef.get();
+            
+            if (!snapshot.empty) {
+                const data = snapshot.docs[0].data();
+                const yesterdayTodayItems = data.today?.items || [];
+                
+                // Add these as suggestions for today's "yesterday" section
+                if (yesterdayTodayItems.length > 0) {
+                    currentEntry.yesterday = yesterdayTodayItems.map(item => ({
+                        text: typeof item === 'string' ? item : item.text,
+                        createdAt: new Date()
+                    }));
+                }
+            }
+        }
+
+        async function loadAllEntries() {
+            const entriesRef = db.collection('standupEntries')
+                .where('userId', '==', currentUser.uid)
+                .orderBy('date', 'desc')
+                .limit(30);
+            
+            const snapshot = await entriesRef.get();
+            allEntries = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+        }
+
+        async function loadSuggestions() {
+            const suggestionsRef = db.collection('userSuggestions').doc(currentUser.uid);
+            const doc = await suggestionsRef.get();
+            
+            if (doc.exists) {
+                const data = doc.data();
+                suggestions = {
+                    yesterday: data.commonTasks || [],
+                    today: data.commonTasks || [],
+                    blockers: data.commonBlockers || []
+                };
+            }
+        }
+
+        async function saveCurrentEntry() {
+            if (!currentUser) return;
+            
+            showSaveStatus('saving', 'Saving...');
+            
+            try {
+                const entryData = {
+                    userId: currentUser.uid,
+                    date: currentDate,
+                    yesterday: {
+                        items: currentEntry.yesterday,
+                        lastModified: new Date()
+                    },
+                    today: {
+                        items: currentEntry.today,
+                        lastModified: new Date()
+                    },
+                    blockers: {
+                        items: currentEntry.blockers,
+                        lastModified: new Date()
+                    },
+                    updatedAt: new Date()
+                };
+
+                if (currentEntry.id) {
+                    await db.collection('standupEntries').doc(currentEntry.id).update(entryData);
+                } else {
+                    entryData.createdAt = new Date();
+                    const docRef = await db.collection('standupEntries').add(entryData);
+                    currentEntry.id = docRef.id;
+                }
+
+                await updateSuggestions();
+                showSaveStatus('saved', 'All changes saved');
+                
+            } catch (error) {
+                console.error('Error saving:', error);
+                showSaveStatus('error', 'Failed to save');
+            }
+        }
+
+        async function updateSuggestions() {
+            const allTexts = [
+                ...currentEntry.yesterday.map(item => typeof item === 'string' ? item : item.text),
+                ...currentEntry.today.map(item => typeof item === 'string' ? item : item.text)
+            ];
+            
+            const blockerTexts = currentEntry.blockers.map(item => typeof item === 'string' ? item : item.text);
+            
+            // Update frequency counts
+            allTexts.forEach(text => {
+                const existing = suggestions.yesterday.find(s => s.text === text);
+                if (existing) {
+                    existing.frequency++;
+                    existing.lastUsed = new Date();
+                } else if (text.length > 5) {
+                    suggestions.yesterday.push({
+                        text: text,
+                        frequency: 1,
+                        lastUsed: new Date()
+                    });
+                }
+            });
+
+            blockerTexts.forEach(text => {
+                const existing = suggestions.blockers.find(s => s.text === text);
+                if (existing) {
+                    existing.frequency++;
+                    existing.lastUsed = new Date();
+                } else if (text.length > 5) {
+                    suggestions.blockers.push({
+                        text: text,
+                        frequency: 1,
+                        lastUsed: new Date()
+                    });
+                }
+            });
+
+            // Keep only top 20 suggestions, sorted by frequency
+            suggestions.yesterday = suggestions.yesterday
+                .sort((a, b) => b.frequency - a.frequency)
+                .slice(0, 20);
+            
+            suggestions.today = suggestions.yesterday; // Same suggestions for both
+            
+            suggestions.blockers = suggestions.blockers
+                .sort((a, b) => b.frequency - a.frequency)
+                .slice(0, 20);
+
+            // Save to Firestore
+            await db.collection('userSuggestions').doc(currentUser.uid).set({
+                commonTasks: suggestions.yesterday,
+                commonBlockers: suggestions.blockers
+            });
+        }
+
+        function scheduleAutoSave() {
+            if (saveTimeout) clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(saveCurrentEntry, 2000);
+        }
+
+        function showSaveStatus(status, message) {
+            const statusEl = document.getElementById('saveStatus');
+            statusEl.className = `save-status ${status}`;
+            statusEl.innerHTML = `<span>${message}</span>`;
+            
+            if (status === 'saved') {
+                setTimeout(() => {
+                    statusEl.className = 'save-status saved';
+                    statusEl.innerHTML = '<span>💾 All changes saved</span>';
+                }, 2000);
+            }
+        }
+
+        // Entry management functions
+        function renderCurrentEntry() {
+            renderSection('yesterday');
+            renderSection('today');
+            renderSection('blockers');
+        }
+
+        function renderSection(section) {
+            const container = document.getElementById(`items-${section}`);
+            const items = currentEntry[section];
+            
+            if (items.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">${section === 'yesterday' ? '📝' : section === 'today' ? '🎯' : '🚫'}</div>
+                        <p>No ${section === 'yesterday' ? 'completed tasks' : section === 'today' ? 'planned tasks' : 'blockers'} yet</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = items.map((item, index) => {
+                const text = typeof item === 'string' ? item : item.text;
+                const priority = item.priority || 'medium';
+                const resolved = item.resolved || false;
+                const createdAt = item.createdAt || new Date();
+                
+                return `
+                    <li class="item ${resolved ? 'resolved' : ''}" data-index="${index}">
+                        <div class="item-content">${text}</div>
+                        ${section === 'blockers' ? `
+                            <div class="item-meta">
+                                <span class="priority-badge priority-${priority}">${priority}</span>
+                                <button class="item-action" onclick="toggleBlockerResolved(${index})" title="${resolved ? 'Mark as unresolved' : 'Mark as resolved'}">
+                                    ${resolved ? '↩️' : '✅'}
+                                </button>
+                            </div>
+                        ` : ''}
+                        <div class="item-actions">
+                            <button class="item-action" onclick="editItem('${section}', ${index})" title="Edit">✏️</button>
+                            <button class="item-action delete" onclick="deleteItem('${section}', ${index})" title="Delete">🗑️</button>
+                        </div>
+                    </li>
+                `;
+            }).join('');
+        }
+
+        function showQuickAdd(section) {
+            document.getElementById(`quickAdd-${section}`).classList.add('active');
+            document.getElementById(`input-${section}`).focus();
+        }
+
+        function hideQuickAdd(section) {
+            document.getElementById(`quickAdd-${section}`).classList.remove('active');
+            document.getElementById(`input-${section}`).value = '';
+            hideSuggestions();
+        }
+
+        function addItem(section) {
+            const input = document.getElementById(`input-${section}`);
+            const text = input.value.trim();
+            
+            if (!text) return;
+            
+            const item = {
+                text: text,
+                createdAt: new Date()
+            };
+            
+            if (section === 'blockers') {
+                const priority = document.getElementById(`priority-${section}`).value;
+                item.priority = priority;
+                item.resolved = false;
+            }
+            
+            currentEntry[section].push(item);
+            hideQuickAdd(section);
+            renderSection(section);
+            scheduleAutoSave();
+        }
+
+        function deleteItem(section, index) {
+            if (confirm('Are you sure you want to delete this item?')) {
+                currentEntry[section].splice(index, 1);
+                renderSection(section);
+                scheduleAutoSave();
+            }
+        }
+
+        function editItem(section, index) {
+            const item = currentEntry[section][index];
+            const text = typeof item === 'string' ? item : item.text;
+            const newText = prompt('Edit item:', text);
+            
+            if (newText !== null && newText.trim()) {
+                if (typeof currentEntry[section][index] === 'string') {
+                    currentEntry[section][index] = newText.trim();
+                } else {
+                    currentEntry[section][index].text = newText.trim();
+                }
+                renderSection(section);
+                scheduleAutoSave();
+            }
+        }
+
+        function toggleBlockerResolved(index) {
+            const blocker = currentEntry.blockers[index];
+            blocker.resolved = !blocker.resolved;
+            renderSection('blockers');
+            scheduleAutoSave();
+        }
+
+        // Suggestions functions
+        function showSuggestions(section, query) {
+            const container = document.getElementById(`suggestions-${section}`);
+            
+            if (query.length < 2) {
+                container.classList.remove('active');
+                return;
+            }
+            
+            const relevantSuggestions = suggestions[section].filter(s => 
+                s.text.toLowerCase().includes(query.toLowerCase()) &&
+                s.text.toLowerCase() !== query.toLowerCase()
+            ).slice(0, 5);
+            
+            if (relevantSuggestions.length === 0) {
+                container.classList.remove('active');
+                return;
+            }
+            
+            container.innerHTML = relevantSuggestions.map(suggestion => `
+                <div class="suggestion-item" onclick="applySuggestion('${section}', '${suggestion.text.replace(/'/g, "\\'")}')">
+                    ${suggestion.text}
+                </div>
+            `).join('');
+            
+            container.classList.add('active');
+        }
+
+        function applySuggestion(section, text) {
+            document.getElementById(`input-${section}`).value = text;
+            hideSuggestions();
+        }
+
+        function hideSuggestions() {
+            document.querySelectorAll('.suggestions').forEach(el => {
+                el.classList.remove('active');
+            });
+        }
+
+        // Date navigation functions
+        function updateDateDisplay() {
+            const date = new Date(currentDate + 'T00:00:00');
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            document.getElementById('currentDate').textContent = date.toLocaleDateString('en-US', options);
+        }
+
+        function navigateDate(direction) {
+            const date = new Date(currentDate + 'T00:00:00');
+            date.setDate(date.getDate() + direction);
+            currentDate = date.toISOString().split('T')[0];
+            
+            document.getElementById('datePicker').value = currentDate;
+            updateDateDisplay();
+            loadCurrentEntry().then(renderCurrentEntry);
+        }
+
+        function navigateToDate(dateStr) {
+            if (dateStr) {
+                currentDate = dateStr;
+                updateDateDisplay();
+                loadCurrentEntry().then(renderCurrentEntry);
+            }
+        }
+
+        // History functions
+        function showHistory() {
+            document.getElementById('historyModal').classList.add('active');
+            renderHistory();
+        }
+
+        function hideHistory() {
+            document.getElementById('historyModal').classList.remove('active');
+            document.getElementById('historySearch').value = '';
+        }
+
+        function renderHistory() {
+            const container = document.getElementById('historyContent');
+            
+            if (allEntries.length === 0) {
+                container.innerHTML = '<div class="empty-state"><p>No entries found</p></div>';
+                return;
+            }
+            
+            container.innerHTML = allEntries.map(entry => {
+                const date = new Date(entry.date + 'T00:00:00');
+                const formattedDate = date.toLocaleDateString('en-US', { 
+                    weekday: 'short',
+                    month: 'short', 
+                    day: 'numeric',
+                    year: 'numeric'
+                });
+                
+                return `
+                    <div class="history-entry">
+                        <div class="history-date">${formattedDate}</div>
+                        ${entry.yesterday?.items?.length ? `
+                            <div class="history-section">
+                                <h4>✅ Yesterday</h4>
+                                <ul class="history-items">
+                                    ${entry.yesterday.items.map(item => 
+                                        `<li>${typeof item === 'string' ? item : item.text}</li>`
+                                    ).join('')}
+                                </ul>
+                            </div>
+                        ` : ''}
+                        ${entry.today?.items?.length ? `
+                            <div class="history-section">
+                                <h4>🎯 Today</h4>
+                                <ul class="history-items">
+                                    ${entry.today.items.map(item => 
+                                        `<li>${typeof item === 'string' ? item : item.text}</li>`
+                                    ).join('')}
+                                </ul>
+                            </div>
+                        ` : ''}
+                        ${entry.blockers?.items?.length ? `
+                            <div class="history-section">
+                                <h4>🚫 Blockers</h4>
+                                <ul class="history-items">
+                                    ${entry.blockers.items.map(item => {
+                                        const text = typeof item === 'string' ? item : item.text;
+                                        const priority = item.priority || 'medium';
+                                        const resolved = item.resolved ? ' (Resolved)' : '';
+                                        return `<li>${text} <span class="priority-badge priority-${priority}">${priority}</span>${resolved}</li>`;
+                                    }).join('')}
+                                </ul>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filterHistory() {
+            const query = document.getElementById('historySearch').value.toLowerCase();
+            const entries = document.querySelectorAll('.history-entry');
+            
+            entries.forEach(entry => {
+                const text = entry.textContent.toLowerCase();
+                entry.style.display = text.includes(query) ? 'block' : 'none';
+            });
+        }
+
+        // Export function
+        function exportEntry() {
+            if (!currentEntry.yesterday.length && !currentEntry.today.length && !currentEntry.blockers.length) {
+                alert('No data to export for current date');
+                return;
+            }
+            
+            const date = new Date(currentDate + 'T00:00:00');
+            const formattedDate = date.toLocaleDateString('en-US', { 
+                weekday: 'long',
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            
+            let exportText = `Daily Standup - ${formattedDate}\n\n`;
+            
+            if (currentEntry.yesterday.length) {
+                exportText += '✅ What I did yesterday:\n';
+                currentEntry.yesterday.forEach(item => {
+                    const text = typeof item === 'string' ? item : item.text;
+                    exportText += `• ${text}\n`;
+                });
+                exportText += '\n';
+            }
+            
+            if (currentEntry.today.length) {
+                exportText += '🎯 What I\'m doing today:\n';
+                currentEntry.today.forEach(item => {
+                    const text = typeof item === 'string' ? item : item.text;
+                    exportText += `• ${text}\n`;
+                });
+                exportText += '\n';
+            }
+            
+            if (currentEntry.blockers.length) {
+                exportText += '🚫 Blockers & Issues:\n';
+                currentEntry.blockers.forEach(item => {
+                    const text = typeof item === 'string' ? item : item.text;
+                    const priority = item.priority ? ` [${item.priority.toUpperCase()}]` : '';
+                    const resolved = item.resolved ? ' ✅' : '';
+                    exportText += `• ${text}${priority}${resolved}\n`;
+                });
+            }
+            
+            // Create and download file
+            const blob = new Blob([exportText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `standup-${currentDate}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // PWA Installation
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // Show install button
+            const installBtn = document.createElement('button');
+            installBtn.className = 'btn btn-secondary';
+            installBtn.innerHTML = '📱 Install App';
+            installBtn.onclick = async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const result = await deferredPrompt.userChoice;
+                    if (result.outcome === 'accepted') {
+                        installBtn.remove();
+                    }
+                    deferredPrompt = null;
+                }
+            };
+            
+            document.querySelector('.header-right').appendChild(installBtn);
+        });
+
+        // Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('data:text/javascript,console.log("SW registered")')
+                    .catch(err => console.log('SW registration failed'));
+            });
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case '1':
+                        e.preventDefault();
+                        showQuickAdd('yesterday');
+                        break;
+                    case '2':
+                        e.preventDefault();
+                        showQuickAdd('today');
+                        break;
+                    case '3':
+                        e.preventDefault();
+                        showQuickAdd('blockers');
+                        break;
+                    case 's':
+                        e.preventDefault();
+                        saveCurrentEntry();
+                        break;
+                    case 'h':
+                        e.preventDefault();
+                        showHistory();
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
